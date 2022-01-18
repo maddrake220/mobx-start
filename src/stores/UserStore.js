@@ -1,4 +1,5 @@
-import { action, makeObservable, observable } from "mobx";
+import axios from "axios";
+import { action, makeObservable, observable, runInAction } from "mobx";
 
 export default class UserStore {
   @observable
@@ -29,5 +30,25 @@ export default class UserStore {
   fail(error) {
     this.state.loading = false;
     this.state.error = error;
+  }
+
+  async getUsers() {
+    try {
+      runInAction(() => {
+        this.state.loading = true;
+        this.state.error = null;
+      });
+      const response = await axios.get("https://api.github.com/users");
+      runInAction(() => {
+        this.state.users = response.data;
+        this.state.loading = false;
+        this.state.error = null;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.state.loading = false;
+        this.state.error = error;
+      });
+    }
   }
 }
