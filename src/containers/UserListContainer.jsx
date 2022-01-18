@@ -5,7 +5,7 @@ import { userStore } from "../stores/RootStore";
 
 const UserListContainer = ({ userStore }) => {
   const getUsers = useCallback(() => {
-    userStore.getUsers();
+    userStore.getUsersFlow();
   }, [userStore]);
   const users = userStore.state.users;
 

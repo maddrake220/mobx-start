@@ -1,5 +1,5 @@
 import axios from "axios";
-import { action, makeObservable, observable, runInAction } from "mobx";
+import { action, flow, makeObservable, observable, runInAction } from "mobx";
 
 export default class UserStore {
   @observable
@@ -49,6 +49,21 @@ export default class UserStore {
         this.state.loading = false;
         this.state.error = error;
       });
+    }
+  }
+
+  @flow
+  *getUsersFlow() {
+    try {
+      this.state.loading = true;
+      this.state.error = null;
+      const response = yield axios.get("https://api.github.com/users");
+      this.state.users = response.data;
+      this.state.loading = false;
+      this.state.error = null;
+    } catch (error) {
+      this.state.loading = false;
+      this.state.error = error;
     }
   }
 }
